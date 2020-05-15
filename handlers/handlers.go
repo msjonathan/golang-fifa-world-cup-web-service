@@ -12,17 +12,16 @@ func RootHandler(res http.ResponseWriter, req *http.Request) {
 
 // ListWinners returns winners from the list
 func ListWinners(res http.ResponseWriter, req *http.Request) {
-	winners, err := data.ListAllJSON()
-
-	if err != nil {
-		res.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
 	res.Header().Set("Content-Type", "application/json")
 	year := req.URL.Query().Get("year")
 
 	if year == "" {
+		winners, err := data.ListAllJSON()
+
+		if err != nil {
+			res.WriteHeader(http.StatusInternalServerError)
+			return
+		}
 		res.Write(winners)
 	} else {
 		winner, err := data.ListAllByYear(year)
@@ -31,10 +30,8 @@ func ListWinners(res http.ResponseWriter, req *http.Request) {
 			res.WriteHeader(http.StatusBadRequest)
 			return
 		}
-
 		res.Write(winner)
 	}
-
 }
 
 // AddNewWinner adds new winner to the list
